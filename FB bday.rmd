@@ -1,0 +1,95 @@
+---
+title: "FB Friend Birthdays Analysis"
+author: "Xingying Baxter"
+date: "November 29, 2018"
+output: rmarkdown::github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This is a small project just to explore my facebook friends' birthdays! Steps I took before using R:  
+
+1. Export my friends' birthdays from facebook to google calendar (An ics doccument)
+2. Convert the ics document to csv using this link: <https://www.indigoblue.eu/ics2csv/> and download it  
+
+**Read the csv data** 
+
+```{r read data}
+# locate the data
+"C:/Data Analysis & Programming/Data Analysis Nanodegree/term 2/R docs"
+
+bday <- read.csv('fb birthdays data.csv')
+summary(bday)
+
+```
+There are 211 friends in my facebook have entered their birthdays.
+  
+**Data cleaning** 
+
+```{r data cleaning}
+#1. just keep the first two columns
+bday <- bday[, -c(3:9)]
+#2. change the column names
+colnames(bday) <- c("name", "birthday")
+#3. check the type of the data
+sapply(bday, class)
+#4. convert the birthday data type to date
+bday$birthday <- as.Date(bday$birthday, format = "%m/%d/%Y")
+sapply(bday, class)
+bday$birthday <- format(bday$birthday, "%m-%d")
+#5. clean the name column
+bday$name <- gsub("'s birthday","",bday$name)
+#6. create new columns for month and day seperately 
+library(lubridate)
+bday$month <- month(as.POSIXlt(bday$birthday, format="%m-%d"))
+bday$day <- day(as.POSIXlt(bday$birthday, format="%m-%d"))
+
+```
+
+**Data analysis** 
+
+```{r data analysis}
+# 1. How many people have the same birthday as you?
+sum(bday$birthday == "08-25") # my birthday is included in this data set
+# the result is 2 so total is 2-1(myself) = 1
+
+# 2. Which month contains the most number of birthdays?
+sort(table(bday$month), decreasing = T)
+# the result is 8
+
+# 3. How many birthdays are in each month?
+library(ggplot2)
+ggplot(data=bday, aes(x=month)) +
+  geom_bar(fill="#9999ff") +
+  geom_text(stat='count', aes(label=..count..), vjust=-1) +
+  scale_x_continuous("Month", breaks = bday$month)+
+  scale_y_continuous("Number of Birthdays", limits = c(0,30))+
+  ggtitle("Birthday Distribution by Month") +
+  theme(plot.title = element_text(hjust = 0.5))+
+  geom_hline(yintercept = mean(table(bday$month)), color="red")
+
+# 4. Which day of the year has the most number of birthdays?
+sort(table(bday$birthday), decreasing=T) # 01-06
+
+# 5. Which day of the month has the most number of birthdays?
+sort(table(bday$day), decreasing=T) # day 18
+ggplot(data=bday, aes(x=bday$day)) +
+  geom_bar(fill="#00cc99") +
+  geom_text(stat='count', aes(label=..count..), vjust=-1) +
+  scale_x_continuous("Day", breaks = bday$day)+
+  scale_y_continuous("Number of Cases", limits = c(0,15))+
+  ggtitle("Birthday Distribution by Day") +
+  theme(plot.title = element_text(hjust = 0.5))+
+  geom_hline(yintercept = mean(table(bday$day)), color="red")
+
+```
+  
+**Findings**  
+1. Most of my friends have birthdays in the second half of the year (see the 'Birthday Distribution by Month' bar chart from above).  
+2. In terms of the days in a month, most of my friends have birthdays on the day of 18th. The second most popular day is the 30th. And the popular days that are above average are almost evenly spreaded out over the month.
+
+
