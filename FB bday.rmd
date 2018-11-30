@@ -71,6 +71,7 @@ ggplot(data=bday, aes(x=month)) +
   ggtitle("Birthday Distribution by Month") +
   theme(plot.title = element_text(hjust = 0.5))+
   geom_hline(yintercept = mean(table(bday$month)), color="red")
+ggsave("bday_month.jpeg")
 
 # 4. Which day of the year has the most number of birthdays?
 sort(table(bday$birthday), decreasing=T) # 01-06
@@ -85,6 +86,7 @@ ggplot(data=bday, aes(x=bday$day)) +
   ggtitle("Birthday Distribution by Day") +
   theme(plot.title = element_text(hjust = 0.5))+
   geom_hline(yintercept = mean(table(bday$day)), color="red")
+ggsave("bday_day.jpeg")
 
 ```
   
