@@ -1,8 +1,8 @@
 ---
-title: "FB Friend Birthdays Analysis"
-author: "Xingying Baxter"
-date: "November 29, 2018"
-output: rmarkdown::github_document
+title: "FB Friend Birthdays Analysis"   
+author: "Xingying Baxter"  
+date: "November 29, 2018"  
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -20,7 +20,7 @@ This is a small project just to explore my facebook friends' birthdays! Steps I 
 
 ```{r read data}
 # locate the data
-"C:/Data Analysis & Programming/Data Analysis Nanodegree/term 2/R docs"
+"C:/Users/xt436/OneDrive/Desktop/FB-Birthdays-Analysis"
 
 bday <- read.csv('fb birthdays data.csv')
 summary(bday)
